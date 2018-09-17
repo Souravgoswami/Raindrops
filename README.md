@@ -1,6 +1,15 @@
 # Raindrops
 Raindrops Math Game
 
+Instructions:
+    Download and extract zip.
+    Go to Raindrops directory.
+    Run the main.rb file.
+    Done.
+    
+Caveat: Ruby2D is needed to be able to run the game.
+
+Details about the game:
 In this game you have water drops with simple mathematics in it.
 You have to type the numbers and get the math correct.
 
