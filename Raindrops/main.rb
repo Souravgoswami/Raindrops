@@ -2,12 +2,12 @@
 begin
 	require 'ruby2d'
 rescue LoadError => e
-	STDERR.write "\033[38;5;171m#{e}\033[0m\n\n"
-	STDERR.puts "Description:\n"
-	STDERR.puts "\tRuby2D is not found in the default directory."
-	STDERR.puts "\tRuby2D is Required by the scripts and the subscripts."
-	STDERR.puts "Exiting"
-	exit!
+	warn "\033[38;5;171m#{e}\033[0m\n\n"
+	warn "Description:\n"
+	warn "\tRuby2D is not found in the default directory."
+	warn "\tRuby2D is Required by the scripts and the subscripts."
+	warn "Exiting"
+	exit! 127
 end
 
 $info = File.open('data/info.txt', 'a+')
@@ -18,14 +18,13 @@ class MagicParticles
 
 	def self.generate(x, y, magic=true, mouse=false, smoke=false)
 		if magic then square = Square.new x: x, y: y, z: 0, color: %w(yellow white #f5ffa3 blue #ff50a6).sample, size: rand(1..2)
-		elsif mouse then square = Square.new x: rand(0..$width), y: rand(0..$height), z: 0, color: 'random', size: rand(4..8) ; square.opacity = 1
+		elsif mouse
+			square = Image.new(path: "images/#{['hoverstars.png', 'hoverstars1.png'].sample}") ; square.width = square.height = rand(10..12)
 		elsif smoke then square = Square.new x: x, y: y, z: -1, color: 'yellow', size: rand(1..2) ; square.opacity = 0
 		else square = Square.new x: x, y: y, z: 0, color: 'white', size: rand(8..12) ; square.opacity = 0 end ; square
 	end
 
-	def items
-		@hash.keys.each do |key| yield @hash[key] if block_given? end
-	end
+	def items() @hash.keys.each do |key| yield @hash[key] if block_given? end end
 
 	def float(fizzing=false, magic=false, lowerlimit=50, upperlimit=200, x, y)
 		for key in @hash.keys
@@ -62,50 +61,43 @@ class MagicParticles
 	end
 end
 
-def generate(level=1)
-	if level == 1
-		text = ["#{rand(0..10)}#{[:+].sample}#{rand(1..10)}", "#{rand(10..20)}#{[:-].sample}#{rand(0..9)}"].sample
 
-	elsif level == 2
-		text = "#{rand(0..10)}#{[:+, :-, :*].sample}#{rand(1..10)}"
-
-	elsif level == 3
-		n = rand(1..5)
-		text = ["#{rand(-10..20)}#{[:+, :-, :*].sample}#{rand(1..10)}", "#{(n..100).step(n).to_a.sample}/#{n}"].sample
-
-	elsif level == 4
-		n = rand(1..8)
-		text = ["#{rand(-10..20)}#{[:+, :-, :*].sample}#{rand(10..20)}", "#{rand(-10..50)}#{[:+].sample}#{rand(0..50)}",
-				"#{(n..50).step(n).to_a.sample}/#{n}"].sample
-
-	elsif level == 5
-		n = rand(2..8)
-		text = ["#{rand(-10..20)}#{[:+, :-, :*].sample}#{rand(10..20)}", "#{(n..120).step(n).to_a.sample}/#{[[n/2.0, n].sample].sample}"].sample
-
-	elsif level == 6
-		n = rand(4..10)
-		text = ["#{rand(-10..20)}#{[:+, :-, :*].sample}#{rand(-10..20)}", "#{(5..100).step(5).to_a.sample}/#{[1, 2.5, 5].sample}",
-				"#{rand(-50..200)}#{[:+, :-].sample}#{rand(-100..250)}", "#{rand(-10..20)}#{[:*].sample}#{rand(0..20)}",
-				"#{(n..120).step(n).to_a.sample}/#{[n/4.0, n/2.0, n].sample}"].sample
-
-	elsif level == 7
-		n = rand(5..12)
-		text = ["#{rand(-10..20)}#{[:+, :-, :*].sample}#{rand(-10..20)}", "#{(n..100).step(n).to_a.sample}/#{[n/8.0, n/4.0, n/2.0, n].sample}"].sample
-
-	elsif level == 8
-		n = rand(8..20)
-		text = ["#{rand(-10..20)}#{[:+, :-, :*].sample}#{rand(-10..20)}", "#{(n..200).step(n).to_a.sample}/#{[n/8.0, n/4.0, n/2.0, n].sample}"].sample
-
-	elsif level == 9
-		n = rand(12..50)
-		text = ["#{rand(-10..20)}#{[:+, :-, :*].sample}#{rand(-10..20)}", "#{(n..200).step(n).to_a.sample}/#{[n/16.0, n/8.0, n/4.0, n/2.0, n].sample}"].sample
-	end
-
-	x, y = rand(20..$width - 60), rand(-50..10)
-	t = Text.new x: x, y: y, font: 'fonts/arima.otf', size: 18, z: rand(0..2), text: text ; t.opacity = 0 ; t
-end
 
 def main
+	generate = ->(level=1) do
+		case level
+			when 1
+				text = ["#{rand(0..10)}#{[:+].sample}#{rand(1..10)}", "#{rand(10..20)}#{[:-].sample}#{rand(0..9)}"].sample
+			when 2
+				text = "#{rand(0..10)}#{[:+, :-, :*].sample}#{rand(1..10)}"
+			when 3
+				n = rand(1..5)
+				text = ["#{rand(-10..20)}#{[:+, :-, :*].sample}#{rand(1..10)}", "#{(n..100).step(n).to_a.sample}/#{n}"].sample
+			when 4
+				n = rand(1..8)
+				text = ["#{rand(-10..20)}#{[:+, :-, :*].sample}#{rand(10..20)}", "#{rand(-10..50)}#{[:+].sample}#{rand(0..50)}",
+					"#{(n..50).step(n).to_a.sample}/#{n}"].sample
+			when 5
+				n = rand(2..8)
+				text = ["#{rand(-10..20)}#{[:+, :-, :*].sample}#{rand(10..20)}", "#{(n..120).step(n).to_a.sample}/#{[[n/2.0, n].sample].sample}"].sample
+			when 6
+				n = rand(4..10)
+				text = ["#{rand(-10..20)}#{[:+, :-, :*].sample}#{rand(-10..20)}", "#{(5..100).step(5).to_a.sample}/#{[1, 2.5, 5].sample}",
+					"#{rand(-50..200)}#{[:+, :-].sample}#{rand(-100..250)}", "#{rand(-10..20)}#{[:*].sample}#{rand(0..20)}",
+					"#{(n..120).step(n).to_a.sample}/#{[n/4.0, n/2.0, n].sample}"].sample
+			when 7
+				n = rand(5..12)
+				text = ["#{rand(-10..20)}#{[:+, :-, :*].sample}#{rand(-10..20)}", "#{(n..100).step(n).to_a.sample}/#{[n/8.0, n/4.0, n/2.0, n].sample}"].sample
+			when 8
+				n = rand(8..20)
+				text = ["#{rand(-10..20)}#{[:+, :-, :*].sample}#{rand(-10..20)}", "#{(n..200).step(n).to_a.sample}/#{[n/8.0, n/4.0, n/2.0, n].sample}"].sample
+			when 9
+				n = rand(12..50)
+				text = ["#{rand(-10..20)}#{[:+, :-, :*].sample}#{rand(-10..20)}", "#{(n..200).step(n).to_a.sample}/#{[n/16.0, n/8.0, n/4.0, n/2.0, n].sample}"].sample
+		end
+		x, y = rand(20..$width - 60), rand(-50..10)
+		t = Text.new x: x, y: y, font: 'fonts/arima.otf', size: 18, z: rand(0..2), text: text ; t.opacity = 0 ; t
+	end
 		colour_of_the_day = %w(blue teal green lime yellow orange red fuchsia purple #3ce3b4 #ff50a6).sample
 		keycolour = %w(blue teal green lime yellow orange red fuchsia purple #3ce3b4 #ff50a6 gray #ada9ff #fda6ff #fd8bb7)
 		$width, $height = 1200, 900
@@ -145,7 +137,7 @@ def main
 		back_button = Image.new path: 'images/back.png', x: 5, y: menu_text.y + 10
 		back_button.x = -back_button.width + 15
 
-		flakehash, rainhash, butterflyhash = {}, {}, {}
+		flakehash, bird_spritesheet = [], []
 
 		Image.new path: 'images/tree1.png', y: $height - 40
 		Image.new path: 'images/tree1.png', x: 20, y: $height - 40
@@ -219,7 +211,7 @@ def main
 			magehash.merge! temp => MagicParticles.generate(rand(key_layout.x..key_layout.x + key_layout.width),key_layout.y + key_layout.height)
 			hoverparticleshash.merge! temp => MagicParticles.generate(50, 50, false, mouse=true)
 			glowparticleshash.merge! temp => MagicParticles.generate(50, 50)
-			smokehash.merge! temp => MagicParticles.generate(500, 500, false, false, true)
+			smokehash.merge! temp => MagicParticles.generate(500, 500, false, true, true)
 			bubblehash.merge! temp => MagicParticles.generate(rand(0..250), rand($height - 200..$height), true)
 		end
 
@@ -236,10 +228,10 @@ def main
 		smokes = MagicParticles.new(smokehash)
 		magicice = MagicParticles.new(bubblehash)
 
-		crystal_bank, rand_white_crystal_y= {}, rand(35..45)
+		crystal_bank, rand_white_crystal_y= [], rand(35..45)
 
-		0.step(240, 20) do |temp| crystal_bank.merge! temp => Image.new(path: 'images/crystal.png', x: key_layout.x + temp, y: key_layout.y + key_layout.height - 35) end
-		6.times do |temp| crystal_bank.merge! temp + 5 => Image.new(path: 'images/crystal2.png', x: key_layout.x + temp * rand_white_crystal_y , y: key_layout.y + key_layout.height - 25, color: colour_of_the_day) end
+		0.step(240, 20) do |temp| crystal_bank << Image.new(path: 'images/crystal.png', x: key_layout.x + temp, y: key_layout.y + key_layout.height - 35) end
+		6.times do |temp| crystal_bank << Image.new(path: 'images/crystal2.png', x: key_layout.x + temp * rand_white_crystal_y , y: key_layout.y + key_layout.height - 25, color: colour_of_the_day) end
 
 		key_layoutline1 = Line.new x1: key_layout.x, x2: key_layout.x + key_layout.width, y1: key_layout.y, y2: key_layout.y,color: 'white', z: 1
 		key_layoutline2 = Line.new x1: key_layout.x, x2: key_layout.x + key_layout.width, y1: key_layout.y + key_layout.height, y2: key_layout.y + key_layout.height, color: 'white', z: 1
@@ -312,17 +304,10 @@ def main
 		music = Music.new 'sounds/Patakas World.wav'
 		buttonpush = Sound.new 'sounds/buttonpush.mp3'
 		plop = Sound.new 'sounds/plop.mp3'
-		bird1 = Sound.new 'sounds/bird1.mp3'
-		bird2 = Sound.new 'sounds/bird2.mp3'
-		bird3 = Sound.new 'sounds/bird3.mp3'
-		bird4 = Sound.new 'sounds/bird4.mp3'
-		bird5 = Sound.new 'sounds/bird5.mp3'
 		waternoise = Sound.new 'sounds/waternoise.mp3'
-
 		music.loop = true
 
 		$info.puts("Game Started #{t.call('on %D at %T')}")
-
 		on :key_down do |k|
 			if k.key == 'r'
 				keycolour.rotate!
@@ -330,7 +315,7 @@ def main
 			end
 			bg.color = 'random' if k.key == 'b'
 
-			if k.key == 'return' or k.key == 'keypad enter' and !started
+			if ['return', 'keypad enter'].include?(k.key) and !started
 				Sound.new('sounds/k2.mp3').play
 				glowparticles.alpha = 1
 				started = true
@@ -353,12 +338,11 @@ def main
 					nums[13].color = 'blue'
 					keypress_sound.play
 				end
-
-				if k.key == 'backspace' or k.key == 'x'
+				if k.key == ['backspace', 'x'].include?(k.key)
 					pressed_key = pressed_key[0..-2]
 					del.color = 'red'
 				end
-				if k.key == 'delete' or k.key == 'c'
+				if ['delete', 'c'].include?(k.key)
 					pressed_key = ''
 					display_c_l.color = 'blue'
 				end
@@ -385,15 +369,13 @@ def main
 		end
 		keypadmove = false
 		on :mouse_move do |e|
-			hoverparticles.shuffle(e.x, e.y)
+			hoverparticles.shuffle(rand(e.x - 5..e.x + 10), rand(e.y..e.y + 20))
 			if notificationline.contains?(e.x, e.y) then notificationline.opacity = 1 end
-			if water.contains?(e.x, e.y)
-				water.color, water.opacity = '#0084f7', 0.5
-				else
-				water.color, water.opacity = 'blue', 0.5
+			if water.contains?(e.x, e.y) then water.color, water.opacity = '#0084f7', 0.5
+				else water.color, water.opacity = 'blue', 0.5
 			end
 
-			for key in flakehash.keys do flakehash[key].opacity -= 0.05 if flakehash[key].contains?(e.x, e.y) and flakehash[key].y >= notificationline.y2 end
+			for val in flakehash do val.opacity -= 0.05 if val.contains?(e.x, e.y) and val.y >= notificationline.y2 end
 			if show_menu.contains?(e.x, e.y) then show_menu.color = colour_of_the_day
 				else show_menu.color = 'white' end
 			if notificationtime.contains?(e.x, e.y)
@@ -439,7 +421,7 @@ def main
 				for key in nums.keys do
 					nums[key].remove
 					nums_l[key].remove if !nums_l[key].nil? end
-				for key in crystal_bank.keys do crystal_bank[key].remove end
+				for val in crystal_bank do val.remove end
 
 				nums.clear ; nums_l.clear ; crystal_bank.clear
 				display.x, display.y = move_l.x - 195, move_l.y - 150
@@ -447,11 +429,11 @@ def main
 				display_l.x, display_l.y = display.x, display.y + 5
 				display_c_l.x, display_c_l.y = display.x + display.width - 23, display.y + 15
 				0.step(240, 20) do |temp|
-					crystal_bank.merge! temp => Image.new(path: 'images/crystal.png', x: key_layout.x + temp, y: key_layout.y + key_layout.height - 35, z: -1)
+					crystal_bank << Image.new(path: 'images/crystal.png', x: key_layout.x + temp, y: key_layout.y + key_layout.height - 35, z: -1)
 				end
 
 				6.times do |temp|
-					crystal_bank.merge! temp + 250 => Image.new(path: 'images/crystal2.png', x: key_layout.x + temp * rand_white_crystal_y, y: key_layout.y + key_layout.height - 25, color: colour_of_the_day)
+					crystal_bank << Image.new(path: 'images/crystal2.png', x: key_layout.x + temp * rand_white_crystal_y, y: key_layout.y + key_layout.height - 25, color: colour_of_the_day)
 				end
 				y, num = 10, 0
 				4.times do 0.step(130, 65) do |temp|
@@ -486,41 +468,34 @@ def main
 					spacetrig += 1
 			end
 			if e.x >= 20 and e.x <= 180 and e.y >= $height - 100 and e.y <= $height
-				[bird1, bird2,bird3, bird4, bird5].sample.play if time.to_i % 7 == 0
-				if [true, false].sample
-						butterflyhash.merge! i => Image.new(path: 'images/butterfly.png', x: e.x, y: e.y)
-					elsif [true, false].sample
-						butterflyhash.merge! i => Image.new(path: 'images/butterfly2.png', x: e.x, y: e.y)
-					else
-						butterflyhash.merge! i => Image.new(path: 'images/star.png', x: e.x, y: e.y)
-				end
+				bird_spritesheet << Sprite.new(['images/bird_spritesheet.png', 'images/blue_bird_spritesheet.png', 'images/green_bird_spritesheet.png'].sample,
+					clip_width: 30, loop: true, time: 120, x: e.x, y: e.y, z: 0, width: 25, height: 25)
 			elsif boat.contains?(e.x, e.y) then boattrigger = true
-			elsif water.contains?(e.x, e.y)
-				waternoise.play
+			elsif water.contains?(e.x, e.y) then waternoise.play
 			end
-
 			if move_l.contains?(e.x, e.y) then keypadmove = true
 				elsif background.contains?(e.x, e.y)
  					plop.play
-					selectedcolour = %x(ruby SubWindows/colourwindow.rb).to_i
-					bg.color = 'blue' if selectedcolour == 0
-					bg.color = 'green' if selectedcolour == 1
-					bg.color = 'red' if selectedcolour == 2
-					bg.color = 'purple' if selectedcolour == 3
-					bg.color = 'lime' if selectedcolour == 4
-					bg.color = 'yellow' if selectedcolour == 5
-					bg.color = 'white' if selectedcolour == 6
-					bg.color = 'gray' if selectedcolour == 7
-					bg.color = 'silver' if selectedcolour == 8
-					bg.color = 'black' if selectedcolour == 9
-					bg.color = 'fuchsia' if selectedcolour == 10
-					bg.color = 'maroon' if selectedcolour == 11
-					bg.color = 'navy' if selectedcolour == 12
-					bg.color = 'brown' if selectedcolour == 13
-					bg.color = 'teal' if selectedcolour == 14
-					bg.color = 'olive' if selectedcolour == 15
-					bg.color = 'aqua' if selectedcolour == 16
-					bg.color = 'orange' if selectedcolour == 17
+					case %x(ruby SubWindows/colourwindow.rb).to_i
+						when 0 then bg.color = 'blue'
+						when 1 then bg.color = 'green'
+						when 2 then bg.color = 'red'
+						when 3 then bg.color = 'purple'
+						when 4 then bg.color = 'lime'
+						when 5 then bg.color = 'yellow'
+						when 6 then bg.color = 'white'
+						when 7 then bg.color = 'gray'
+						when 8 then bg.color = 'silver'
+						when 9 then bg.color = 'black'
+						when 10 then bg.color = 'fuchsia'
+						when 11 then bg.color = 'maroon'
+						when 12 then bg.color = 'navy'
+						when 13 then bg.color = 'brown'
+						when 14 then bg.color = 'teal'
+						when 15 then bg.color = 'olive'
+						when 16 then bg.color = 'aqua'
+						when 17 then bg.color = 'orange'
+					end
 
 				elsif level_plus.contains?(e.x, e.y) then plop.play ; if level < 9 then level += 1 ; old_level = level ; force_level = true ;music.play if force_level end
 				elsif level_minus.contains?(e.x, e.y)
@@ -545,9 +520,7 @@ def main
 						pressed_key += '-' if key == 13 and !pressed_key.include?('-')
 						if key == 14 then triggered = spacetrig % 2 == 0 ? true : false ; spacetrig += 1 end
 					end
-					if key == 10
-						for key in nums.keys do nums[key].color = keycolour.rotate![0] end
-					end
+					for key in nums.keys do nums[key].color = keycolour.rotate![0] end if key == 10
 					pressed_key = pressed_key[0..-2] if key == 12
 				end
 			end
@@ -555,17 +528,10 @@ def main
 
 		on :mouse_up do |e|
 			if reset_stats.contains?(e.x, e.y)
-				confirm = %x(ruby SubWindows/resetstatsconfirm.rb).to_s
-				if confirm.include? "RESET"
-					$info.truncate(0)
-					exit
-				end
+				if %x(ruby SubWindows/resetstatsconfirm.rb).to_s.include? "RESET" then $info.truncate(0) ; exit! end
 			end
-			if quit_.contains?(e.x, e.y)
-				a = %x(ruby SubWindows/quitwindow.rb)
-				close if a.include?("QUIT")
-			end
-			system('ruby SubWindows/aboutwindow.rb') if about.contains?(e.x, e.y)
+			if quit_.contains?(e.x, e.y) then close if %x(ruby SubWindows/quitwindow.rb).include?("QUIT") end
+			Thread.new { system('ruby SubWindows/aboutwindow.rb') } if about.contains?(e.x, e.y)
 			if display_c_l.contains?(e.x, e.y) then display_c_l.color = 'red' end
 			if newgame.contains?(e.x, e.y)
 				confirm = %x(ruby SubWindows/newgameconfirmwindow.rb).to_s if started
@@ -585,8 +551,7 @@ def main
 			keypadmove, boattrigger = false, false
 		end
 
-		on :mouse_scroll do|e| bg.color = ['random', 'white', colour_of_the_day].sample end
-
+		on :mouse_scroll do|e| bg.color = ['random', 'white'].sample end
 		update do
 			i += 1
 			hoverparticles.draw
@@ -606,15 +571,14 @@ def main
 			lives_menu.text = "Remaining Lives: #{lives}"
 			water.y1 = Math.sin(i/10)/3 + water.y1
 			water.y2 = Math.cos(i/10)/4 + water.y2
-			butterflyhash.keys.each do |key|
-				butterfly = butterflyhash[key]
-				unless butterfly.x <= -butterfly.width
-					butterfly.x -= [-1, 1, 1, 1, 1].sample
-					butterfly.y += Math.sin(i/10)/[1,2].sample
-					butterfly.opacity += rand(0.005..0.01) if butterfly.opacity >= 0
+			bird_spritesheet.each do |val|
+				unless val.x <= -val.width
+					val.play
+					val.x -= 1
+					val.y += Math.sin(i/rand(15..20))
 				else
-					butterfly.remove
-					butterflyhash.delete(key)
+					val.remove
+					bird_spritesheet.delete(val)
 				end
 			end
 			boatglow.opacity -= 0.01 if boatglow.opacity >= 0
@@ -650,13 +614,15 @@ def main
 			flake1.y += 1
 			flake1.opacity -= rand(0.003..0.006)
 
-			flakehash.merge! i => Image.new(path: 'images/flake1.png', x: rand(0..$width), y: rand(-$height..0)) if flakehash.size < rand(15..20)
-			for key in flakehash.keys
-				flakehash[key].y += 0.5
-				flakehash[key].opacity -= 0.0003
-			if flakehash[key].y >= $height
-				flakehash[key].remove
-				flakehash.delete(key) ; end end
+			flakehash << Image.new(path: 'images/flake1.png', x: rand(0..$width), y: rand(-$height..0)) if flakehash.size < 25
+				for val in flakehash
+					val.y += 0.5
+					val.opacity -= 0.0003
+				if val.y >= $height
+					val.remove
+					flakehash.delete(val)
+				end
+			end
 			move_l.color = 'white' unless keypadmove
 			move_l.color = 'fuchsia' if keypadmove
 
@@ -788,7 +754,7 @@ def main
 				inittext.opacity -= 0.02
 
 				# uncomment the following line for enabling autoplay (no human interaction needed to play)
-				# for key in h.keys do pressed_key = eval(h[key].text).to_s if h[key].y >= rand(100..$height - 200) end
+				# for key in h.keys do pressed_key = eval(h[key].text).to_s if h[key].y >= rand(50..$height - 200) end
 
 				for key in h.keys do
 					h[key].y += speed
@@ -830,7 +796,7 @@ def main
 							end
 							robot_blip.play
 							pos = h[key].x, h[key].y
-							randflake = flakehash[flakehash.to_a.sample[0]]
+							randflake = flakehash.sample
 						 	if randflake.y <= 0-randflake.height then randflake.x, randflake.y = pos end
 							h[key].remove
 							h.delete(key)
@@ -857,10 +823,10 @@ def main
 				end
 				if time.next == t.call('%s')
 					if h.count <= restriction
-						possible_num = generate(level)
+						possible_num = generate.call(level)
 						h.keys.each do |key|
 							while eval(h[key].text).to_s.start_with?(eval(possible_num.text).to_s) or eval(possible_num.text).to_s.start_with?(eval(h[key].text).to_s) do
-								possible_num.opacity = 0 ; possible_num.remove ; possible_num = generate(level)
+								possible_num.opacity = 0 ; possible_num.remove ; possible_num = generate.call(level)
 							end
 						end
 						h.merge! i => possible_num
