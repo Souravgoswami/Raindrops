@@ -51,7 +51,7 @@ class MagicParticles
 			obj.x -= [-1, 0, 1].sample
 			obj.y += [2, 0].sample if initialized
 			obj.y -= [2, 0].sample unless initialized
-			obj.opacity -= 0.005 if obj.opacity >= 0
+			obj.opacity -= 0.015 if obj.opacity >= 0
 		end
 	end
 	def shuffle(x, y)
@@ -60,8 +60,6 @@ class MagicParticles
 		obj.opacity = 1
 	end
 end
-
-
 
 def main
 	generate = ->(level=1) do
@@ -618,6 +616,9 @@ def main
 				for val in flakehash
 					val.y += 0.5
 					val.opacity -= 0.0003
+					val.rotate += rand(1..3)
+					val.width += 0.003
+					val.height += 0.003
 				if val.y >= $height
 					val.remove
 					flakehash.delete(val)
