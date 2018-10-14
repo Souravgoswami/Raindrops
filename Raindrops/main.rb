@@ -338,8 +338,8 @@ def main
 					nums[13].color = 'blue'
 					keypress_sound.play
 				end
-				if k.key == ['backspace', 'x'].include?(k.key)
-					pressed_key = pressed_key[0..-2]
+				if ['backspace', 'x'].include?(k.key)
+					pressed_key.chop!
 					del.color = 'red'
 				end
 				if ['delete', 'c'].include?(k.key)
