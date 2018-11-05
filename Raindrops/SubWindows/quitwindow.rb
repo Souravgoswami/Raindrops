@@ -1,23 +1,26 @@
-#!/usr/bin/env ruby
+#!/usr/bin/ruby -W0
+# Written by Sourav Goswami <souravgoswami@protonmail.com>
+# GNU General Public License v3.0
+
 require 'ruby2d'
 $width, $height = 280, 100
 set title: "Confirm Quit", width: $width, height: $height, borderless: true, resizable: true, background: 'white'
 
-confirmtext = Text.new font: 'fonts/arima.otf', text: ['Already Quit?', 'Quit Now?', 'Exit Game?', 'Quit Game?', 'Confirm Quit...'].sample,
+confirmtext = Text.new ['Already Quit?', 'Quit Now?', 'Exit Game?', 'Quit Game?', 'Confirm Quit...'].sample, font: 'fonts/arima.otf',
 		 x: 20, y: 20, color: 'purple', size: 20
 button_colour, alt_button_colour = ['#58c4ff', '#00d5ac', '#01d5ac', '#54c5fd'], ['#f07da5', '#04d5a4', '#59c3ff', '#59c3ff']
 
 yes = Rectangle.new x: confirmtext.x, y: confirmtext.y + confirmtext.height + 5, height: 30, width: 70, color: button_colour
-yes_l = Text.new font: 'fonts/arima.otf', text: 'Yes', y: yes.y, color: 'white'
+yes_l = Text.new 'Yes', font: 'fonts/arima.otf', y: yes.y, color: 'white'
 yes_l.x = yes.x + yes_l.width - 10
 
 no = Rectangle.new x: yes.x + yes.width + 10, y: yes.y, height: 30, width: 70, color: button_colour
-no_l = Text.new font: 'fonts/arima.otf', text: 'No', y: no.y, color: 'white'
+no_l = Text.new 'No', font: 'fonts/arima.otf', y: no.y, color: 'white'
 no_l.x = no.x + no_l.width
 
 yespressed, nopressed = false, false
 
-close_ = Image.new path: 'images/c.png', x: 5, y: 5
+close_ = Image.new 'images/c.png', x: 5, y: 5
 closehover = false
 
 on :mouse_move do |e|
