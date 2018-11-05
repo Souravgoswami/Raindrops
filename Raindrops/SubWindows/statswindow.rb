@@ -1,4 +1,7 @@
-#!/usr/bin/env ruby
+#!/usr/bin/ruby -W0
+# Written by Sourav Goswami <souravgoswami@protonmail.com>
+# GNU General Public License v3.0
+
 require 'ruby2d'
 $width, $height = 480, 480
 set title: 'Stats Viewer', background: 'blue', width: $width, height: $height
@@ -14,17 +17,17 @@ for i in 0..5
 	upbuttons.merge! i => Line.new(x1: 0, x2: $width/1.5, y1: 0 + i * 35, y2: 0 + i * 35, width:35, color: 'random', z: 0)
 end
 
-down = Image.new path: 'images/down.png', x: $width/2 - 20, y: $height - 35, z: 1, width: 30, height: 30
-up = Image.new path: 'images/up.png', x: $width/2 - 20, y: 5, width: 30, height: 30, z: 1
+down = Image.new 'images/down.png', x: $width/2 - 20, y: $height - 35, z: 1, width: 30, height: 30
+up = Image.new 'images/up.png', x: $width/2 - 20, y: 5, width: 30, height: 30, z: 1
 Rectangle.new width: $width, height: $height, color: %w(#60bfff #ff88dd #3ce3b4 #ffa3c4 )
 
 quit_ = Rectangle.new width: 60, height: 20
 quit_.x, quit_.y = $width - quit_.width - 5, $height - quit_.height - 5
-quit__l = Text.new font: 'fonts/arima.otf', text: "Close", color: 'purple', x: quit_.x + 12, y: quit_.y - 2, size: 15
+quit__l = Text.new "Close", font: 'fonts/arima.otf', color: 'purple', x: quit_.x + 12, y: quit_.y - 2, size: 15
 
 reset = Rectangle.new width: 60, height: 20
 reset.x, reset.y = quit_.x - reset.width - 5, $height - reset.height - 5
-reset_l = Text.new font: 'fonts/arima.otf', text: "Reset", color: 'purple', x: reset.x + 12, y: reset.y - 2, size: 15
+reset_l = Text.new "Reset", font: 'fonts/arima.otf', color: 'purple', x: reset.x + 12, y: reset.y - 2, size: 15
 
 column, texthash = 0, {}
 $info = File.open('data/info.txt', 'r+')
@@ -34,11 +37,11 @@ data = $info.readlines
 unless data.empty?
 	data.each do |x|
 		column += 1
-		texthash.merge! column => Ruby2D::Text.new(font: 'fonts/arima.otf', text: x.chomp, x: 5, y: column * 20, size: 18, z: 1)
+		texthash.merge! column => Ruby2D::Text.new(x.chomp, font: 'fonts/arima.otf', x: 5, y: column * 20, size: 18, z: 1)
 	end
 else
-	texthash.merge! 0 => Ruby2D::Text.new(font: 'fonts/arima.otf', text: "No info right now!", x: 5, y: 0, size: 18, z: 1)
-	texthash.merge! 1 => Ruby2D::Text.new(font: 'fonts/arima.otf', text: "Perhaps Play the game for a while, and come back?", x: 5, y: 25, size: 18, z: 1)
+	texthash.merge! 0 => Ruby2D::Text.new("No info right now!", font: 'fonts/arima.otf', x: 5, y: 0, size: 18, z: 1)
+	texthash.merge! 1 => Ruby2D::Text.new("Perhaps Play the game for a while, and come back?", font: 'fonts/arima.otf', x: 5, y: 25, size: 18, z: 1)
 end
 
 particles = {}
