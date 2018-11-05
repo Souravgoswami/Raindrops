@@ -1,7 +1,10 @@
-#!/usr/bin/env ruby
+#!/usr/bin/ruby -W0
+# Written by Sourav Goswami <souravgoswami@protonmail.com>
+# GNU General Public License v3.0
+
 require 'ruby2d'
 set title: 'Choose Colour', background: 'white', width: 630, height: 165, resizable: true
-choose = Text.new font: 'fonts/arima.otf', text: 'Choose!', z: 5 ; choose.opacity = 0
+choose = Text.new 'Choose!', font: 'fonts/arima.otf', z: 5 ; choose.opacity = 0
 i, y, hashindex, colourhash, selected, v = 0.05, 0.08, 0, {}, false, ''
 
 for colour in %w(#004da2 #088e34 #31302b #20099b #00b952 #2a8f00
