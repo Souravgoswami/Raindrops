@@ -3,126 +3,72 @@
 # GNU General Public License v3.0
 
 require 'ruby2d'
-$width, $height = 480, 480
-set title: 'Stats Viewer', background: 'blue', width: $width, height: $height
+$width, $height = 280, 100
+set title: "New Game?", width: $width, height: $height, borderless: true, background: 'white'
 
-def generate
-	square = Square.new x: rand(50..$width), y: rand(0..$height + 500), size: rand(40..60) ; square.opacity = rand(0.1..0.3)
-	square
-end
+warned = Text.new  'Warning! Start Refreshed?', font: 'fonts/arima.otf', x: 20, y: 20, color: 'red', size: 18
+close_ = Image.new 'images/c.png', x: 5, y: 5, height: 15, width: 15
 
-downbuttons, upbuttons = {}, {}
-for i in 0..5
-	downbuttons.merge! i => Line.new(x1: 0, x2: $width/1.5, y1: $height - i * 35, y2: $height - i * 35, width:35, color: 'random', z: 0)
-	upbuttons.merge! i => Line.new(x1: 0, x2: $width/1.5, y1: 0 + i * 35, y2: 0 + i * 35, width:35, color: 'random', z: 0)
-end
+button_colour, alt_button_colour = ['#58c4ff', '#00d5ac', '#01d5ac', '#54c5fd'], ['#f07da5', '#04d5a4', '#59c3ff', '#59c3ff']
 
-down = Image.new 'images/down.png', x: $width/2 - 20, y: $height - 35, z: 1, width: 30, height: 30
-up = Image.new 'images/up.png', x: $width/2 - 20, y: 5, width: 30, height: 30, z: 1
-Rectangle.new width: $width, height: $height, color: %w(#60bfff #ff88dd #3ce3b4 #ffa3c4 )
+yes = Rectangle.new x: warned.x + warned.width/6, y: warned.y + warned.height + 5, height: 30, width: 70, color: button_colour
+yes_l = Text.new %w(Yes Ok!).sample, font: 'fonts/arima.otf', y: yes.y, color: 'white'
+yes_l.x = yes.x - yes_l.width + 50
 
-quit_ = Rectangle.new width: 60, height: 20
-quit_.x, quit_.y = $width - quit_.width - 5, $height - quit_.height - 5
-quit__l = Text.new "Close", font: 'fonts/arima.otf', color: 'purple', x: quit_.x + 12, y: quit_.y - 2, size: 15
+no = Rectangle.new x: yes.x + yes.width + 10, y: warned.y + warned.height + 5, height: 30, width: 70, color: button_colour
+no_l = Text.new %w(No! No).sample, font: 'fonts/arima.otf', y: no.y, color: 'white'
+no_l.x = no.x - no_l.width + 50
 
-reset = Rectangle.new width: 60, height: 20
-reset.x, reset.y = quit_.x - reset.width - 5, $height - reset.height - 5
-reset_l = Text.new "Reset", font: 'fonts/arima.otf', color: 'purple', x: reset.x + 12, y: reset.y - 2, size: 15
-
-column, texthash = 0, {}
-$info = File.open('data/info.txt', 'r+')
-$info.sync = true
-data = $info.readlines
-
-unless data.empty?
-	data.each do |x|
-		column += 1
-		texthash.merge! column => Ruby2D::Text.new(x.chomp, font: 'fonts/arima.otf', x: 5, y: column * 20, size: 18, z: 1)
-	end
-else
-	texthash.merge! 0 => Ruby2D::Text.new("No info right now!", font: 'fonts/arima.otf', x: 5, y: 0, size: 18, z: 1)
-	texthash.merge! 1 => Ruby2D::Text.new("Perhaps Play the game for a while, and come back?", font: 'fonts/arima.otf', x: 5, y: 25, size: 18, z: 1)
-end
-
-particles = {}
-10.times do |temp| particles.merge! temp => generate end
-
-scrolldown, scrollup, scrollingup, scrollingdown, speed, speedvar = false, false, false, false, false, 0.5, 6
+yespressed, nopressed = false, false
 
 on :mouse_move do |e|
-	downbuttons.each do |key, val|
-		if val.contains?(e.x, e.y)
-			scrolldown, scrollingdown = true, true
-			speedvar = key
-			break
-		else
-			scrolldown, scrollingdown, down.opacity = false, false, 1
-		end
-	end
+	if yes.contains?(e.x, e.y) then yes.color, yes_l.color, yespressed = alt_button_colour, 'purple', true
+		else yes.color, yes_l.color, yespressed = button_colour, 'white', false end
 
-	upbuttons.each do |key, val|
-		if val.contains?(e.x, e.y)
-			scrollup, scrollingup, speedvar = true, true, key
-			break
-		else
-			scrollup, scrollingup, up.opacity = false, false, 1
-		end
+	if no.contains?(e.x, e.y) then no.color, no_l.color, nopressed = alt_button_colour, 'purple', true
+		else no.color, no_l.color, nopressed = button_colour, 'white', false end
+
+	if warned.contains?(e.x, e.y) then warned.color = 'purple' else warned.color = 'red' end
+	if close_.contains?(e.x, e.y)
+		close_.color = 'teal'
+		close_.height, close_.width = 17, 17
+		close_.x, close_.y = 4, 4
+	else
+		close_.color = 'white'
+		close_.height, close_.width = 15, 15
+		close_.x, close_.y = 5, 5
 	end
-	if reset.contains?(e.x, e.y) then reset.color, reset_l.color = 'purple', 'white' else reset.color, reset_l.color = 'white', 'purple' end
-	if quit_.contains?(e.x, e.y) then quit_.color, quit__l.color = 'red', 'white' else quit_.color, quit__l.color = 'white', 'purple' end
+end
+
+on :mouse_down do |e|
+ 	yes.color = 'red' if yes.contains?(e.x, e.y)
+	no.color = 'green' if no.contains?(e.x, e.y)
+	close_.color = 'aqua' if close_.contains?(e.x, e.y)
 end
 
 on :mouse_up do |e|
-	exit if quit_.contains?(e.x, e.y)
-	if reset.contains?(e.x, e.y)
-		if %x(ruby SubWindows/resetstatsconfirm.rb).include? 'RESET'
-			$info.truncate(0)
-		end
-
-	end
-end
-
-on :mouse_scroll do |e|
-	speedvar -= 0.5
-	scrolldown, scrollup = true, false if e.delta_y == 1
-	scrollup, scrolldown = true,false if e.delta_y == -1
+	nopressed, yespressed = false
+	if yes.contains?(e.x, e.y) then puts 'NEWGAME' ; exit end
+	exit if no.contains?(e.x, e.y) or close_.contains?(e.x, e.y)
 end
 
 update do
-	sleep 0.001
-	for particle in particles.values do
-		particle.y -= 1 if particle.y > -particle.height
-		particle.y = rand($height..$height + 500) if particle.y <= -particle.height
+	if yespressed
+		yes.y -= 1 if yes.y > warned.y + warned.height
+		yes_l.y -= 1 if yes_l.y > yes.y
+	else
+		yes.y += 1 if yes.y < warned.y + warned.height + 5
+		yes_l.y += 1 if yes_l.y < yes.y
 	end
 
-	scrolldown, scrollup = false, false if Time.new.strftime('%N')[0].to_i  % 10 == 0 and (!scrollingdown and !scrollingup)
-	if scrolldown
-		down.opacity = 0.5
-		speed = 1 if speedvar == 5
-		speed = 5 if speedvar == 4
-		speed = 10 if speedvar == 3
-		speed = 13 if speedvar == 2
-		speed = 15 if speedvar == 1
-		speed = 20 if speedvar <= 0
-		if texthash.values.last.y >= texthash.values.last.height + 400
-			for val in texthash.values
-				val.y -= speed
-			end
-		end
-	else down.opacity = 1
-	end
-
-	if scrollup
-		up.opacity = 0.5
-		speed = 1 if speedvar == 5
-		speed = 5 if speedvar == 4
-		speed = 10 if speedvar == 3
-		speed = 13 if speedvar == 2
-		speed = 15 if speedvar == 1
-		speed = 20 if speedvar == 0
-		if texthash.values.first.y <= $height - texthash.values.first.height - 400 then for val in texthash.values do val.y += speed end end
-	else up.opacity = 1
+	if nopressed
+		no.y -= 1 if no.y > warned.y + warned.height
+		no_l.y -= 1 if no_l.y > no.y
+	else
+		no.y += 1 if no.y < warned.y + warned.height + 5
+		no_l.y += 1 if no_l.y < no.y
 	end
 end
 
 show
+puts 100
