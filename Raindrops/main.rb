@@ -1,4 +1,7 @@
 #!/usr/bin/env ruby
+# Written by Sourav Goswami <souravgoswami@protonmail.com>
+# GNU General Public License v3.0
+
 begin
 	require 'ruby2d'
 rescue LoadError => e
