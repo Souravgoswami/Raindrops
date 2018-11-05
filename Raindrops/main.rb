@@ -19,7 +19,7 @@ class MagicParticles
 	def self.generate(x, y, magic=true, mouse=false, smoke=false)
 		if magic then square = Square.new x: x, y: y, z: 0, color: %w(yellow white #f5ffa3 blue #ff50a6).sample, size: rand(1..2)
 		elsif mouse
-			square = Image.new(path: "images/#{['hoverstars.png', 'hoverstars1.png'].sample}") ; square.width = square.height = rand(10..12)
+			square = Image.new( "images/#{['hoverstars.png', 'hoverstars1.png'].sample}") ; square.width = square.height = rand(10..12)
 		elsif smoke then square = Square.new x: x, y: y, z: -1, color: 'yellow', size: rand(1..2) ; square.opacity = 0
 		else square = Square.new x: x, y: y, z: 0, color: 'white', size: rand(8..12) ; square.opacity = 0 end ; square
 	end
@@ -94,7 +94,7 @@ def main
 				text = ["#{rand(-10..20)}#{[:+, :-, :*].sample}#{rand(-10..20)}", "#{(n..200).step(n).to_a.sample}/#{[n/16.0, n/8.0, n/4.0, n/2.0, n].sample}"].sample
 		end
 		x, y = rand(20..$width - 60), rand(-50..10)
-		t = Text.new x: x, y: y, font: 'fonts/arima.otf', size: 18, z: rand(0..2), text: text ; t.opacity = 0 ; t
+		t = Text.new text, x: x, y: y, font: 'fonts/arima.otf', size: 18, z: rand(0..2) ; t.opacity = 0 ; t
 	end
 		colour_of_the_day = %w(blue teal green lime yellow orange red fuchsia purple #3ce3b4 #ff50a6).sample
 		keycolour = %w(blue teal green lime yellow orange red fuchsia purple #3ce3b4 #ff50a6 gray #ada9ff #fda6ff #fd8bb7)
@@ -102,11 +102,11 @@ def main
 		img = {}
 		set title: "RainDrops", background: 'black', width: $width, height: $height, resizable: true
 		obj, h, i, t = 0, {}, 0, Proc.new { |format| Time.new.strftime(format) }
-		bg = Image.new(path: 'images/bg1.png', z: -10)
+		bg = Image.new( 'images/bg1.png', z: -10)
 		time, pressed_key = t.call('%s'), ''
 		notificationline = Line.new x1: 0, y1: 20, x2: $width, y2: 20, width: 40, color: 'black', z: 5
 		notificationline.opacity, notificationline.y1 = 0.5, notificationline.y2 = notificationline.width/2
-		notificationtime = Text.new x: notificationline.x2/2, y: 5, font: 'fonts/arima.otf', text: t.call('%T'), z: 5
+		notificationtime = Text.new t.call('%T'), x: notificationline.x2/2, y: 5, font: 'fonts/arima.otf', z: 5
 		notificationtime.x = $width/2 - notificationtime.width/2
 		timeline = Line.new x1: notificationtime.x + notificationtime.width/2, x2: notificationtime.x + notificationtime.width/2,
 					y1: notificationtime.y + notificationtime.height - 5, y2: notificationtime.y + notificationtime.height - 5,
@@ -117,44 +117,44 @@ def main
 		lives, answered, missed = 9, 0, 0
 
 		menu_box = Rectangle.new y: 40, width: 0, height: $height - 300, color: ['white', 'black'].sample, z: 5 ; menu_box.opacity = 0.2
-		menu_text = Text.new y: menu_box.y + 0, font: 'fonts/arima.otf', text: "Menu", color: 'white', size: 28, z: 5
+		menu_text = Text.new "Menu", y: menu_box.y + 0, font: 'fonts/arima.otf', color: 'white', size: 28, z: 5
 		menu_text.x, menu_text.opacity = menu_box.width/2 - menu_text.width, 1
 
 		level_details = {1 => :VeryEasy, 2 => :Easy, 3 => :Medium, 4 => :Hard, 5 => :ExremelyHard, 6 => :UltraHard, 7 => :HumanCalculator, 8 => :ExtremeHumanCalculator}
 
-		score_l = Text.new y: 5, font: 'fonts/arima.otf', text: "Score: 5000    Highest Score: 1000", z: 5, size: 13
+		score_l = Text.new "Score: 5000    Highest Score: 1000", y: 5, font: 'fonts/arima.otf', z: 5, size: 13
 		score_l.x = notificationline.x2 - score_l.width - 10
 
-		lives_l = Text.new y:  score_l.y + score_l.height - 5, font: 'fonts/arima.otf', text: "Level: 9    Lives: 1000", z: 5, size: 13
+		lives_l = Text.new "Level: 9    Lives: 1000", y:  score_l.y + score_l.height - 5, font: 'fonts/arima.otf', z: 5, size: 13
 		lives_l.x = score_l.x + score_l.width/2 - lives_l.width/2
 
-		show_menu = Image.new path: 'images/menu.png', x: 5, y: 2, height: 35, width: 35, z: 5
+		show_menu = Image.new  'images/menu.png', x: 5, y: 2, height: 35, width: 35, z: 5
 
 		triggered, started, spacetrig = false, false, 0
 
-		back_button = Image.new path: 'images/back.png', x: 5, y: menu_text.y + 10
+		back_button = Image.new  'images/back.png', x: 5, y: menu_text.y + 10
 		back_button.x = -back_button.width + 15
 
 		flakehash, bird_spritesheet = [], []
 
-		Image.new path: 'images/tree1.png', y: $height - 40
-		Image.new path: 'images/tree1.png', x: 20, y: $height - 40
-		Image.new path: 'images/tree1.png', x: 50, y: $height - 40
-		Image.new path: 'images/tree1.png', x: 90, y: $height - 40
-		Image.new path: 'images/tree1.png', x: 110, y: $height - 40
-		Image.new path: 'images/tree6.png', x: 30, y: $height - 30
-		Image.new path: 'images/tree2.png', x: 5, y: $height - 100
-		Image.new path: 'images/tree3.png', x: 50, y: $height - 100
-		Image.new path: 'images/tree4.png', x: 80, y: $height - 40
-		Image.new path: 'images/tree5.png', x: 100, y: $height - 90
-		Image.new path: 'images/tree6.png', x: 145, y: $height - 30
-		Image.new path: 'images/flowerbush.png', x: 105, y: $height - 30
+		Image.new  'images/tree1.png', y: $height - 40
+		Image.new  'images/tree1.png', x: 20, y: $height - 40
+		Image.new  'images/tree1.png', x: 50, y: $height - 40
+		Image.new  'images/tree1.png', x: 90, y: $height - 40
+		Image.new  'images/tree1.png', x: 110, y: $height - 40
+		Image.new  'images/tree6.png', x: 30, y: $height - 30
+		Image.new  'images/tree2.png', x: 5, y: $height - 100
+		Image.new  'images/tree3.png', x: 50, y: $height - 100
+		Image.new  'images/tree4.png', x: 80, y: $height - 40
+		Image.new  'images/tree5.png', x: 100, y: $height - 90
+		Image.new  'images/tree6.png', x: 145, y: $height - 30
+		Image.new  'images/flowerbush.png', x: 105, y: $height - 30
 
-		cloud1 = Image.new path: 'images/cloud1.png', x: $width, y: rand(0..400) ; cloud1.opacity = 0.3
-		cloud2 = Image.new path: 'images/cloud2.png', x: $width, y: rand(20..400) ; cloud2.opacity = 0.3
-		cloud3 = Image.new path: 'images/cloud3.png', x: $width, y: rand(0..400) ; cloud3.opacity = 0.3
-		cloud4 = Image.new path: 'images/cloud4.png', x: $width, y: rand(0..400) ; cloud4.opacity = 0.3
-		colourcloud = Image.new path: 'images/colourcloud.png', x: rand(0..$width), y: 100 ; colourcloud.opacity = 0.6
+		cloud1 = Image.new  'images/cloud1.png', x: $width, y: rand(0..400) ; cloud1.opacity = 0.3
+		cloud2 = Image.new  'images/cloud2.png', x: $width, y: rand(20..400) ; cloud2.opacity = 0.3
+		cloud3 = Image.new  'images/cloud3.png', x: $width, y: rand(0..400) ; cloud3.opacity = 0.3
+		cloud4 = Image.new  'images/cloud4.png', x: $width, y: rand(0..400) ; cloud4.opacity = 0.3
+		colourcloud = Image.new  'images/colourcloud.png', x: rand(0..$width), y: 100 ; colourcloud.opacity = 0.6
 		colourcloudswitch = [true, false].sample
 		cloud = rand(1..4)
 
@@ -169,40 +169,40 @@ def main
 		about = Rectangle.new x: menu_box.x + 15, y: menu_box.y + 300, width: 230, height: 40, z: 5, color: button_colour ; about.x, about.opacity = -about.width + 15, 0
 		quit_ = Rectangle.new x: menu_box.x + 15, y: menu_box.y + 350, width: 230, height: 40, z: 5, color: button_colour ; quit_.x, quit_.opacity = -quit_.width + 15, 0
 
-		menuscorebox = Image.new path: 'images/box230x80.png', x: menu_box.x + 15, y: quit_.y + quit_.height + 15 ; menuscorebox.opacity = 0
+		menuscorebox = Image.new  'images/box230x80.png', x: menu_box.x + 15, y: quit_.y + quit_.height + 15 ; menuscorebox.opacity = 0
 
-		score_menu = Text.new y: quit_.y + quit_.height + 20, font: 'fonts/arima.otf', text: "Score: 900000", z: 5, size: 18
+		score_menu = Text.new "Score: 900000", y: quit_.y + quit_.height + 20, font: 'fonts/arima.otf', z: 5, size: 18
 		score_menu.x, score_menu.opacity = menu_box.x + 25, 0
 
-		highestscore_menu = Text.new y: quit_.y + quit_.height + 40, font: 'fonts/arima.otf', text: "Highest: 9000000", z: 5, size: 18
+		highestscore_menu = Text.new "Highest: 9000000", y: quit_.y + quit_.height + 40, font: 'fonts/arima.otf', z: 5, size: 18
 		highestscore_menu.x, highestscore_menu.opacity = menu_box.x + 25, 0
 
-		lives_menu = Text.new y: quit_.y + quit_.height + 60, font: 'fonts/arima.otf', text: "Level: 9    Lives: 1000", z: 5, size: 18
+		lives_menu = Text.new "Level: 9    Lives: 1000", y: quit_.y + quit_.height + 60, font: 'fonts/arima.otf', z: 5, size: 18
 		lives_menu.x, lives_menu.opacity = menu_box.x + 25, 0
 
-		answered_menu = Image.new path: 'images/box230x60.png', x: menu_box.x + 15, y: menuscorebox.y + menuscorebox.height + 5 ; answered_menu.opacity = 0
+		answered_menu = Image.new  'images/box230x60.png', x: menu_box.x + 15, y: menuscorebox.y + menuscorebox.height + 5 ; answered_menu.opacity = 0
 
-		answered_l =Text.new y: answered_menu.y + 5, font: 'fonts/arima.otf', text: "Answered: 0", z: 5, size: 18
+		answered_l =Text.new "Answered: 0", y: answered_menu.y + 5, font: 'fonts/arima.otf', z: 5, size: 18
 		answered_l.x, answered_l.opacity = menu_box.x + 25, 0
 
-		missed_l =Text.new y: answered_l.y + answered_l.height - 10, font: 'fonts/arima.otf', text: "Missed: 0", z: 5, size: 18
+		missed_l =Text.new "Missed: 0", y: answered_l.y + answered_l.height - 10, font: 'fonts/arima.otf', z: 5, size: 18
 		missed_l.x, missed_l.opacity = menu_box.x + 25, 0
 
 		key_layout = Rectangle.new y: $height - 280, width: 270, height: 230, color: 'black', z: 0
 		key_layout.x = $width - key_layout.width * 1.8
 		key_layout.opacity = 0.3
-		inittext = Text.new font: 'fonts/DancingScript-Bold.ttf', text: "Press Enter to Start", size: 120, z: -1
+		inittext = Text.new "Press Enter to Start", font: 'fonts/DancingScript-Bold.ttf', size: 120, z: -1
 		inittext.x, inittext.y = inittext.width/2 - $width/4, $width/2 - inittext.height * 2
 
-		liveboost = Image.new path: 'images/life.png'
+		liveboost = Image.new  'images/life.png'
 		liveboost.opacity = 0
 
-		livereduce = Image.new path: 'images/lifeminus.png'
+		livereduce = Image.new  'images/lifeminus.png'
 		livereduce.opacity = 1
 
 		water = Line.new x1: 0, x2: $width, y1: $height, y2: $height, color: 'blue', width: 40, z: -1 ; water.opacity = 0.5
-		boat, boattrigger = Image.new(path: 'images/boat.png', width: 60, height: 60, z: -2), false
-		boatglow = Image.new(path: 'images/boatglow.png', width: 60, height: 60, z: -3) ; boatglow.opacity = 0
+		boat, boattrigger = Image.new( 'images/boat.png', width: 60, height: 60, z: -2), false
+		boatglow = Image.new( 'images/boatglow.png', width: 60, height: 60, z: -3) ; boatglow.opacity = 0
 
 		magehash, particleshash, treeparticleshash, hoverparticleshash, glowparticleshash, smokehash, bubblehash = {}, {}, {}, {}, {}, {}, {}
 		for temp in 0..15
@@ -228,71 +228,71 @@ def main
 
 		crystal_bank, rand_white_crystal_y= [], rand(35..45)
 
-		0.step(240, 20) do |temp| crystal_bank << Image.new(path: 'images/crystal.png', x: key_layout.x + temp, y: key_layout.y + key_layout.height - 35) end
-		6.times do |temp| crystal_bank << Image.new(path: 'images/crystal2.png', x: key_layout.x + temp * rand_white_crystal_y , y: key_layout.y + key_layout.height - 25, color: colour_of_the_day) end
+		0.step(240, 20) do |temp| crystal_bank << Image.new( 'images/crystal.png', x: key_layout.x + temp, y: key_layout.y + key_layout.height - 35) end
+		6.times do |temp| crystal_bank << Image.new( 'images/crystal2.png', x: key_layout.x + temp * rand_white_crystal_y , y: key_layout.y + key_layout.height - 25, color: colour_of_the_day) end
 
 		key_layoutline1 = Line.new x1: key_layout.x, x2: key_layout.x + key_layout.width, y1: key_layout.y, y2: key_layout.y,color: 'white', z: 1
 		key_layoutline2 = Line.new x1: key_layout.x, x2: key_layout.x + key_layout.width, y1: key_layout.y + key_layout.height, y2: key_layout.y + key_layout.height, color: 'white', z: 1
 		key_layoutline3 = Line.new x1: key_layout.x, x2: key_layout.x, y1: key_layout.y, y2: key_layout.y + key_layout.height, z: 1
 		key_layoutline4 = Line.new x1: key_layout.x + key_layout.width, x2: key_layout.x + key_layout.width,  y1: key_layout.y, y2: key_layout.y + key_layout.height, z: 1
 
-		flake1 = Image.new(path: 'images/flake1.png', x: rand(key_layoutline2.x1..key_layoutline2.x2), y: rand(key_layoutline2.y1 - 20..key_layoutline2.y1))
+		flake1 = Image.new( 'images/flake1.png', x: rand(key_layoutline2.x1..key_layoutline2.x2), y: rand(key_layoutline2.y1 - 20..key_layoutline2.y1))
 		flake1.opacity = 0
-		flake2 = Image.new(path: 'images/flake2.png', x: rand(key_layoutline2.x1..key_layoutline2.x2), y: rand(key_layoutline2.y1 - 20..key_layoutline2.y1))
+		flake2 = Image.new( 'images/flake2.png', x: rand(key_layoutline2.x1..key_layoutline2.x2), y: rand(key_layoutline2.y1 - 20..key_layoutline2.y1))
 		flake2.opacity = 0
 
 		display = Rectangle.new x: key_layout.x + 10, y: key_layout.y + 10, width: key_layout.width - 20, height: 50 ; display.opacity = 0.5
 		display_l = Text.new y: display.y + 5, font: 'fonts/arima.otf', size: 25
 		display_l.x = display.x + display.width - display_l.width - 10
 
-		display_c_l = Image.new path: 'images/c.png', x: display.x + display.width - 23, y: display.y + 15
+		display_c_l = Image.new  'images/c.png', x: display.x + display.width - 23, y: display.y + 15
 
 		nums, nums_l, y, num = {}, {}, 10, 0
 		4.times do 0.step(130, 65) do |temp|
 				num += 1
 				nums.merge! num => Rectangle.new(x: display.x + temp, y: display.y + display.height + y, height: 30, width: 50, color: keycolour.rotate[num])
-				nums_l.merge! num => Text.new(x: display.x + temp + 20, y: display.y + display.height + y, font: 'fonts/arima.otf', text: num, color: 'white') if num <= 9
+				nums_l.merge! num => Text.new(num, x: display.x + temp + 20, y: display.y + display.height + y, font: 'fonts/arima.otf', color: 'white') if num <= 9
 			end
 			y += 40
 		end
 
-		rot = Text.new x: display.x + 20, y: display.y + display.height + y - 40 , font: 'fonts/arima.otf', text: 'R', color: 'white', z: 1
-		n0 =  Text.new x: display.x + 25 + 60, y: display.y + display.height + y - 40, font: 'fonts/arima.otf', text: 0, color: 'white', z: 1
-		del =  Text.new x: display.x + 30 + 120, y: display.y + display.height + y - 40, font: 'fonts/arima.otf', text: 'X', color: 'white', z: 1
+		rot = Text.new 'R', x: display.x + 20, y: display.y + display.height + y - 40 , font: 'fonts/arima.otf', color: 'white', z: 1
+		n0 =  Text.new 0, x: display.x + 25 + 60, y: display.y + display.height + y - 40, font: 'fonts/arima.otf', color: 'white', z: 1
+		del =  Text.new 'X', x: display.x + 30 + 120, y: display.y + display.height + y - 40, font: 'fonts/arima.otf', color: 'white', z: 1
 
 		nums.merge! 13 => Rectangle.new(x: display.x + 195, y: display.y + display.height + 10, height: 30, width: 50, color: keycolour.rotate[num + 1])
-		minus_l = Text.new x: display.x + 25 + 190, y: display.y + display.height + 10, font: 'fonts/arima.otf', text: '-', color: 'white', z: 1
+		minus_l = Text.new '-', x: display.x + 25 + 190, y: display.y + display.height + 10, font: 'fonts/arima.otf', color: 'white', z: 1
 
 		nums.merge! 14 => Rectangle.new(x: display.x + 195, y: display.y + display.height + 50, height: 30, width: 50, color: keycolour.rotate[num + 2])
-		pause = Text.new x: display.x + 25 + 190, y: display.y + display.height + 50, font: 'fonts/arima.otf', text: 'P', color: 'white', z: 1
+		pause = Text.new 'P', x: display.x + 25 + 190, y: display.y + display.height + 50, font: 'fonts/arima.otf', color: 'white', z: 1
 
-		move_l = Image.new path: 'images/move.png', x: display.x + 190, y: display.y + display.height + 100
+		move_l = Image.new  'images/move.png', x: display.x + 190, y: display.y + display.height + 100
 
-		play_l = Text.new y: play.y + 4, font: 'fonts/arima.otf', text: 'Play', z: 5
+		play_l = Text.new 'Play', y: play.y + 4, font: 'fonts/arima.otf', z: 5
 		play_l.x, play_l.opacity = play.width/2 - 30, 0
 
-		newgame_l = Text.new y: newgame.y + 4, font: 'fonts/arima.otf', text: 'New Game', z: 5
+		newgame_l = Text.new 'New Game', y: newgame.y + 4, font: 'fonts/arima.otf', z: 5
 		newgame_l.x, newgame_l.opacity = newgame.width/2 - 30, 0
 
-		background_l = Text.new y: background.y + 4, font: 'fonts/arima.otf', text: 'Background', z: 5
+		background_l = Text.new 'Background', y: background.y + 4, font: 'fonts/arima.otf', z: 5
 		background_l.x, background_l.opacity =background.width/2 - 35, 0
 
-		level_plus_l = Text.new y: level_plus.y + 4, font: 'fonts/arima.otf', text: 'Level +', z: 5
+		level_plus_l = Text.new 'Level +', y: level_plus.y + 4, font: 'fonts/arima.otf', z: 5
 		level_plus_l.x, level_plus_l.opacity = level_plus.width/2 - 15, 0
 
-		level_minus_l = Text.new y: level_minus.y + 4, font: 'fonts/arima.otf', text: 'Level -', z: 5
+		level_minus_l = Text.new 'Level -', y: level_minus.y + 4, font: 'fonts/arima.otf', z: 5
 		level_minus_l.x, level_minus_l.opacity = level_minus.width + level_minus.x - level_minus_l.width - 25, 0
 
-		stats_l = Text.new y: stats.y + 4, font: 'fonts/arima.otf', text: 'Stats', z: 5
+		stats_l = Text.new 'Stats', y: stats.y + 4, font: 'fonts/arima.otf', z: 5
 		stats_l.x, stats_l.opacity =stats.width/2 - 15, 0
 
-		reset_stats_l = Text.new y: reset_stats.y + 4, font: 'fonts/arima.otf', text: 'Reset', z: 5
+		reset_stats_l = Text.new 'Reset', y: reset_stats.y + 4, font: 'fonts/arima.otf', z: 5
 		reset_stats_l.x, reset_stats_l.opacity = reset_stats.width + reset_stats.x - reset_stats_l.width - 30, 0
 
-		about_l = Text.new y: about.y + 4, font: 'fonts/arima.otf', text: 'About', z: 5
+		about_l = Text.new 'About', y: about.y + 4, font: 'fonts/arima.otf', z: 5
 		about_l.x, about_l.opacity = about.width/2 -15, 0
 
-		quit__l = Text.new y: quit_.y+ 4, font: 'fonts/arima.otf', text: 'Quit', z: 5
+		quit__l = Text.new 'Quit', y: quit_.y+ 4, font: 'fonts/arima.otf', z: 5
 		quit__l.x, quit__l.opacity = quit_.width/2 - 5, 0
 
 		tada = Sound.new 'sounds/tada.mp3'
@@ -427,17 +427,17 @@ def main
 				display_l.x, display_l.y = display.x, display.y + 5
 				display_c_l.x, display_c_l.y = display.x + display.width - 23, display.y + 15
 				0.step(240, 20) do |temp|
-					crystal_bank << Image.new(path: 'images/crystal.png', x: key_layout.x + temp, y: key_layout.y + key_layout.height - 35, z: -1)
+					crystal_bank << Image.new( 'images/crystal.png', x: key_layout.x + temp, y: key_layout.y + key_layout.height - 35, z: -1)
 				end
 
 				6.times do |temp|
-					crystal_bank << Image.new(path: 'images/crystal2.png', x: key_layout.x + temp * rand_white_crystal_y, y: key_layout.y + key_layout.height - 25, color: colour_of_the_day)
+					crystal_bank << Image.new( 'images/crystal2.png', x: key_layout.x + temp * rand_white_crystal_y, y: key_layout.y + key_layout.height - 25, color: colour_of_the_day)
 				end
 				y, num = 10, 0
 				4.times do 0.step(130, 65) do |temp|
 						num += 1
 						nums.merge! num => Rectangle.new(x: display.x + temp, y: display.y + display.height + y, height: 30, width: 50, color: keycolour.rotate[num])
-						nums_l.merge! num => Text.new(x: display.x + temp + 20, y: display.y + display.height + y, font: 'fonts/arima.otf', text: num, color: 'white') if num <= 9
+						nums_l.merge! num => Text.new(num, x: display.x + temp + 20, y: display.y + display.height + y, font: 'fonts/arima.otf', color: 'white') if num <= 9
 					end
 					y += 40
 				end
@@ -612,7 +612,7 @@ def main
 			flake1.y += 1
 			flake1.opacity -= rand(0.003..0.006)
 
-			flakehash << Image.new(path: 'images/flake1.png', x: rand(0..$width), y: rand(-$height..0)) if flakehash.size < 25
+			flakehash << Image.new( 'images/flake1.png', x: rand(0..$width), y: rand(-$height..0)) if flakehash.size < 25
 				for val in flakehash
 					val.y += 0.5
 					val.opacity -= 0.0003
@@ -788,7 +788,7 @@ def main
 						end
 
 						if pressed_key.to_i == eval(h[key].text).to_i and !pressed_key.empty? and pressed_key != '-'
-							if img[key].path == 'images/waterbonus.png'
+							if img[key]. == 'images/waterbonus.png'
 								lives += 1
 								liveboost.opacity, liveboost.x, liveboost.y = 1, h[key].x, h[key].y
 								score += 500 if %w(1 2 3).include?(level.to_s)
@@ -832,9 +832,9 @@ def main
 						end
 						h.merge! i => possible_num
 						if (!(answered % 15 == 0) or ((time.to_i - inittime.to_i) < 3))
-							img.merge! i => c = Image.new(x: h[i].x, y: h[i].y - 15, path: 'images/water.png', z: -1) ; c.opacity = 0
+							img.merge! i => c = Image.new('images/water.png', x: h[i].x, y: h[i].y - 15, z: -1) ; c.opacity = 0
 						else
-							img.merge! i => c = Image.new(x: h[i].x, y: h[i].y - 15, path: 'images/waterbonus.png', z: -1) ; c.opacity = 0
+							img.merge! i => c = Image.new('images/waterbonus.png', x: h[i].x, y: h[i].y - 15, z: -1) ; c.opacity = 0
 						end
 					end
 				end
