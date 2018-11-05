@@ -1,4 +1,7 @@
-#!/usr/bin/env ruby
+#!/usr/bin/ruby -W0
+# Written by Sourav Goswami <souravgoswami@protonmail.com>
+# GNU General Public License v3.0
+
 require 'ruby2d'
 $width, $height = 900, 600
 set title: "About Raindrops", background: 'blue', width: $width, height: $height
@@ -6,21 +9,21 @@ set title: "About Raindrops", background: 'blue', width: $width, height: $height
 def generate ; s = Square.new x: rand(0..$width), y: rand(500..$height + 500), size: rand(80..100), color: 'white', z: -1 ; s.opacity = rand(0.2..0.4) ; s end
 
 yval = 0.1
-File.open('data/about.info').readlines.each do |x| Text.new text: x.chomp, x: 5, y: yval * 20, color: 'white', font: 'fonts/arima.otf', size: 16 ; yval += 1 end
+File.open('data/about.info').readlines.each do |x| Text.new x.chomp, x: 5, y: yval * 20, color: 'white', font: 'fonts/arima.otf', size: 16 ; yval += 1 end
 
 Rectangle.new width: $width, height: $height, color: %w(#ff50a6 blue #00e3d5 #3ce3d4), z: -5
 
-share = Text.new font: 'fonts/arima.otf', text: 'Share!', color: 'blue', size: 18
+share = Text.new 'Share!', font: 'fonts/arima.otf', color: 'blue', size: 18
 share.x, share.y = $width - share.width - 70, $height - share.height + 5
 share_line = false
 
-quit_ = Text.new font: 'fonts/arima.otf', text: 'Close', color: 'blue', size: 18
+quit_ = Text.new 'Close', font: 'fonts/arima.otf', color: 'blue', size: 18
 quit_.x, quit_.y = share.x + share.width + 20, share.y
 
-credit = Text.new text: "Credits: ", font: "fonts/arima.otf", size: 15, x: 5, y: $height - 22
-author = Text.new text: "Sourav Goswami. ", font: "fonts/arima.otf", size: 15, x: credit.x + credit.width, y: $height - 22
-thanks = Text.new text: "Special thanks to ", font: "fonts/arima.otf", size: 15, x: author.x + author.width, y: $height - 22
-ruby2d_ = Text.new text: "Ruby2D.", font: "fonts/arima.otf", size: 15, x: thanks.x + thanks.width, y: $height - 22
+credit = Text.new "Credits: ", font: "fonts/arima.otf", size: 15, x: 5, y: $height - 22
+author = Text.new "Sourav Goswami. ", font: "fonts/arima.otf", size: 15, x: credit.x + credit.width, y: $height - 22
+thanks = Text.new "Special thanks to ", font: "fonts/arima.otf", size: 15, x: author.x + author.width, y: $height - 22
+ruby2d_ = Text.new "Ruby2D.", font: "fonts/arima.otf", size: 15, x: thanks.x + thanks.width, y: $height - 22
 
 authorline = Line.new x1: author.x + author.width/2, x2: author.x + author.width/2, y1: author.y + author.height - 6, y2: author.y + author.height - 6
 ruby2dline = Line.new x1: ruby2d_.x + ruby2d_.width/2, x2: ruby2d_.x + ruby2d_.width/2, y1: ruby2d_.y + ruby2d_.height - 6, y2: ruby2d_.y + ruby2d_.height - 6
