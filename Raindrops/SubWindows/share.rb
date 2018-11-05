@@ -1,18 +1,21 @@
-#!/usr/bin/env ruby
+#!/usr/bin/ruby -W0
+# Written by Sourav Goswami <souravgoswami@protonmail.com>
+# GNU General Public License v3.0
+
 require 'ruby2d'
 $width, $height = 300, 400
 set title: "Share", borderless: true, background: 'white', width: $width, height: $height
 
-facebook = Image.new path: 'images/facebook.png'
+facebook = Image.new 'images/facebook.png'
 facebook.x, facebook.y = $width/2 - facebook.width/2, 20
 
-twitter = Image.new path: 'images/twitter.png'
+twitter = Image.new 'images/twitter.png'
 twitter.x, twitter.y = $width/2 - twitter.width/2, facebook.y + facebook.height + 60
 
-share = Image.new path: 'images/share.png'
+share = Image.new 'images/share.png'
 share.x, share.y = $width/2 - share.width/2, twitter.y + twitter.height + 60
 
-close_ = Image.new path: 'images/c.png', x: 5, y: 5, height: 15, width: 15
+close_ = Image.new 'images/c.png', x: 5, y: 5, height: 15, width: 15
 
 facebookhover, twitterhover, sharehover = false, false, false
 
