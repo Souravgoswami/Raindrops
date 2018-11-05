@@ -4,7 +4,7 @@
 
 require 'ruby2d'
 $width, $height = 350, 100
-set title: "New Game?", width: $width, height: $height, resizable: true, borderless: true, background: '#5978fa'
+set title: "Reset Stats?", width: $width, height: $height, resizable: true, borderless: true, background: '#5978fa'
 
 warning_text = Text.new 'Warning! Are you Sure to Reset Your Data?', font: 'fonts/arima.otf', x: 30, y: 20, color: 'white', size: 15
 
