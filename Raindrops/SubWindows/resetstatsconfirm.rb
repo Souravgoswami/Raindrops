@@ -1,24 +1,24 @@
 #!/usr/bin/env ruby
+# Written by Sourav Goswami <souravgoswami@protonmail.com>
+# GNU General Public License v3.0
 
 require 'ruby2d'
 $width, $height = 350, 100
 set title: "New Game?", width: $width, height: $height, resizable: true, borderless: true, background: '#5978fa'
 
-# Image.new path: 'images/bg1.png', width: $width, height: $height
-
-warning_text = Text.new font: 'fonts/arima.otf', text: 'Warning! Are you Sure to Reset Your Data?', x: 30, y: 20, color: 'white', size: 15
+warning_text = Text.new 'Warning! Are you Sure to Reset Your Data?', font: 'fonts/arima.otf', x: 30, y: 20, color: 'white', size: 15
 
 button_colour, alt_button_colour = ['#58c4ff', '#00d5ac', '#01d5ac', '#54c5fd'], ['#f07da5', '#04d5a4', '#59c3ff', '#59c3ff']
 
 yes = Rectangle.new x: warning_text.x + warning_text.width/4, y: warning_text.y + warning_text.height + 5, height: 30, width: 70, color: button_colour
-yes_l = Text.new font: 'fonts/arima.otf', text: %w(Yes Ok!).sample, y: yes.y, color: 'white'
+yes_l = Text.new %w(Yes Ok!).sample, font: 'fonts/arima.otf', y: yes.y, color: 'white'
 yes_l.x = yes.x - yes_l.width + 50
 
 no = Rectangle.new x: yes.x + yes.width + 10, y: warning_text.y + warning_text.height + 5, height: 30, width: 70, color: button_colour
-no_l = Text.new font: 'fonts/arima.otf', text: %w(No! No).sample, y: no.y, color: 'white'
+no_l = Text.new %w(No! No).sample, font: 'fonts/arima.otf', y: no.y, color: 'white'
 no_l.x = no.x - no_l.width + 50
 
-close_ = Image.new path: 'images/c.png', x: 5, y: 5
+close_ = Image.new 'images/c.png', x: 5, y: 5
 
 yespressed, nopressed = false, false
 
